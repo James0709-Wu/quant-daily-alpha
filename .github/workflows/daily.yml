@@ -1,1 +1,49 @@
-.github/workflows/daily.yml
+name: Daily Quant Alpha Run
+
+on:
+  schedule:
+    # 每天 UTC 01:00 运行（美股收盘后）
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-daily-alpha:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy scipy pyyaml yfinance matplotlib
+
+      - name: Download market data
+        run: |
+          python scripts/download_data.py
+
+      - name: Compute factors
+        run: |
+          python scripts/run_factors.py
+
+      - name: Run backtest
+        run: |
+          python scripts/run_backtest.py
+
+      - name: Generate report
+        run: |
+          python scripts/generate_report.py
+
+      - name: Commit and push results
+        run: |
+          git config --global user.name "quant-bot"
+          git config --global user.email "quant-bot@users.noreply.github.com"
+          git add data processed reports
+          git commit -m "Daily alpha run $(date -u +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
