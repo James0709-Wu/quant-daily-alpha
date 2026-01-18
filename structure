@@ -1,0 +1,8 @@
+quant-daily-alpha/
+├─ config/
+├─ data/
+├─ factors/
+├─ backtest/
+├─ scripts/
+├─ reports/
+└─ .github/workflows/
