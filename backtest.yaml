@@ -1,0 +1,35 @@
+# ==============================
+# 日级量化回测核心配置
+# ==============================
+
+backtest:
+  frequency: daily
+  start_date: "2015-01-01"
+  end_date: null          # null = 跑到最新交易日
+  initial_capital: 1000000
+  leverage: 1.0
+
+execution:
+  trade_delay: 1          # T+1 执行，严禁 0
+  rebalance_frequency: daily
+  position_weight: equal
+
+transaction_cost:
+  us:
+    commission_bps: 10
+    slippage_bps: 10
+  hk:
+    commission_bps: 30
+    slippage_bps: 20
+    stamp_duty_bps: 13
+
+risk_control:
+  max_single_position: 0.03     # 单股不超过 3%
+  max_industry_exposure: 0.10   # 行业暴露 ±10%
+  max_daily_turnover: 0.20      # 单日换手 20%
+  max_drawdown: 0.20            # 回撤超过 20% 触发风控
+
+portfolio:
+  long_quantile: 0.2
+  short_quantile: 0.2           # 如果你暂时不做空，后面可以关
+  neutralize_market: true
